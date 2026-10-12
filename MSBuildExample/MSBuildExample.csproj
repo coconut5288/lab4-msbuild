@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<MyMessage>Конфигурация: $(Configuration)</MyMessage>
+	</PropertyGroup>
+
+	<Target Name="MyCustomBeforeTarget" BeforeTargets="BeforeBuild">
+		<Message Text="Выполняется MyCustomBeforeTarget" Importance="high" />
+	</Target>
+
+	<!-- ===== ВАРИАНТ 2 ===== -->
+	<Target Name="BeforeBuild">
+		<Message Text="Сборка начинается..." Importance="high" />
+		<Message Text="Debug mode"
+				 Condition="'$(Configuration)' == 'Debug'"
+				 Importance="high" />
+		<Message Text="Release mode"
+				 Condition="'$(Configuration)' == 'Release'"
+				 Importance="high" />
+		<Message Text="$(MyMessage)" Importance="high" />
+	</Target>
+
+	<Target Name="MyCustomAfterTarget" AfterTargets="BeforeBuild">
+		<Message Text="Выполняется MyCustomAfterTarget" Importance="high" />
+	</Target>
+
+	<Target Name="CheckFileExistence" BeforeTargets="Build">
+		<Error Text="Файл App.config не найден!"
+			   Condition="!Exists('App.config')" />
+	</Target>
+
+	<Target Name="CopyConfig" AfterTargets="Build">
+		<Copy SourceFiles="App.config"
+			  DestinationFolder="$(OutputPath)" />
+		<Copy SourceFiles="App.config"
+			  DestinationFiles="$(OutputPath)\App.test.config" />
+	</Target>
+
+</Project>
